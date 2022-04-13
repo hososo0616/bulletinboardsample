@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Rubik+Moonrocks&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -21,7 +23,7 @@ hr {
 body {
   color: #2b546a;
   background-color: #fafafa;
-  font-family:"Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体";
+  font-family: 'DotGothic16', sans-serif;
 }
 
 h1 {
@@ -145,4 +147,8 @@ label {
   .login-btn:active {
       top: 30px;
   }
+}
+
+.error {
+  font-size: 14px;
 }
