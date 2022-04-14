@@ -17,6 +17,37 @@
     }
     // var_dump($form["image"]);
 
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        
+        $db = dbconnect();
+
+        $stmt = $db->prepare("insert into members (name, email, password, image) VALUES (?, ?, ?, ?)");
+        //stmtがうまくいかないとき
+        if (!$stmt) {
+            die($db->error);
+        }
+
+        //パスワードのハッシュ化
+        $password = password_hash($form["password"], PASSWORD_DEFAULT);
+
+        //値の設置
+        // $stmt->bindParam($form["name"], $form["email"], $form["password"], $form["image"]);
+        $stmt->bindParam(1, $form["name"], PDO::PARAM_STR); 
+        $stmt->bindParam(2, $form["email"], PDO::PARAM_STR); 
+        $stmt->bindParam(3, $password, PDO::PARAM_STR); 
+        $stmt->bindParam(4, $form["image"], PDO::PARAM_STR); 
+        $success = $stmt->execute();
+        //successがうまくいかないとき
+        if (!$success) {
+            die($db->error);
+        }
+
+        //セッションの内容を消す
+        unset($_SESSION["form"]);
+
+        header("Location:thank.php");
+    } 
+
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +94,7 @@
             </div>
             
             <br>
-            <a href="entry.php" class="back-btn">変更する</a>
+            <a href="index.php?action=rewrite" class="back-btn">変更する</a>
             <button type="submit" class="btn next-btn">登録する</button>
             <div class="clear"></div>
         </form>
