@@ -2,6 +2,9 @@
     //セッションスタート
     session_start();
 
+    //インポート
+    require("../library.php");
+
     //配列の初期化
     $form = [
         "name" => "",
@@ -10,13 +13,7 @@
     ];
     $error = [];
     // $image = [];
-
-    //htmlspecialcharsをfunction化
-    function h($value) {
-        return htmlspecialchars($value, ENT_QUOTES);
-    }
-
-    
+ 
     //フォームが送信されているか
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -56,11 +53,22 @@
             }
         }
 
+        //エラーなしでする処理
         if (empty($error)) {
             $_SESSION["form"] = $form;
 
             //画像のアップロード
-            $filename = date("YmdHis") . "_" . $image["name"];
+            if ($image["name"] !== "") {
+                $filename = date("YmdHis") . "_" . $image["name"];
+                if (!move_uploaded_file($image["tmp_name"], "../member_picture/" . $filename)){
+                    die("ファイルのアップロードに失敗しました");
+                }
+                $_SESSION["form"]["image"] = $filename;
+            }
+            else {
+                $_SESSION["form"]["image"] = "";
+            }
+
             header("Location: check.php");
             exit();
         }
@@ -117,8 +125,8 @@
                 <input id="image" type="file" name="image">
                 <?php if (!empty($error["image"]) && $error['image'] === 'type'): ?>
                     <p class="error">*写真などは「.png」もしくは「.jpg」の画像を指定してください</p>
-                <?php endif ?>
                     <p class="error">*画像を指定しなおしてください</p>
+                <?php endif ?>
             </div>
 
             <div class="control">
