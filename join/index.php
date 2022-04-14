@@ -5,12 +5,20 @@
     //インポート
     require("../library.php");
 
-    //配列の初期化
-    $form = [
-        "name" => "",
-        "email" => "",
-        "password" => ""
-    ];
+    //書き直しかどうかの判定
+    if (isset($_GET["action"]) && $_GET["action"] === "rewrite" && isset($_SESSION["form"])) {
+        $form = $_SESSION["form"];
+    }
+    else {
+        //書き直しでなかった場合
+        //配列の初期化
+        $form = [
+            "name" => "",
+            "email" => "",
+            "password" => ""
+        ];
+    }
+
     $error = [];
     // $image = [];
  
@@ -31,6 +39,33 @@
         //空かどうかの判定
         if ($form['email'] === '') {
             $error["email"] = "blank";
+        }
+        else {
+            //重複していないかの判定
+            $db = dbconnect();
+            $stmt = $db->prepare("select count(*) from members where email=?");
+
+            if (!$stmt) {
+                die($db->error);
+            }
+
+            $stmt->bindParam(1, $form["email"], PDO::PARAM_STR); 
+
+            //SQLの結果の格納
+            // $stmt->bindColumn();
+
+            $success = $stmt->execute();
+            if (!$success) {
+                die($db->error);
+            }
+
+            $cnt = $stmt->fetchColumn();
+
+            // var_dump($cnt);
+
+            if ($cnt > 0) {
+                $error["email"] = "duplicate";
+            }
         }
 
         //パスワードの取得
