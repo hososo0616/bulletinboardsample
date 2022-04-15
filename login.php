@@ -4,10 +4,6 @@ require("library.php");
 $error = [];
 $email = "";
 $password = "";
-$loginstatus = [];
-$name = "";
-$id = "";
-$hash = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
@@ -20,19 +16,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //ログインチェック
     $db = dbconnect();
 
-    $stmt = $db->prepare("select * from members where email=? limit 1");
+    $stmt = $db->prepare("select id, name, password from members where email=? limit 1");
 
     if (!$stmt) {
       die($db->error);
     }
 
-    $stmt->bindParam(1, $form["email"], PDO::PARAM_STR);
+    $stmt->bindParam(1, $email, PDO::PARAM_STR);
 
-    
+
     $success = $stmt->execute();
     if (!$success) {
       die($db->error);
     }
+
+    $result = $stmt->fetch();
+
+    $id = $result["id"];
+    $name = $result["name"];
+    $hash = $result["password"];
+
+    if (password_verify($password, $hash)) {
+      //ログイン成功
+      session_regenerate_id();
+      $_SESSION["id"] = $id;
+      $_SESSION["name"] = $name;
+      header("Location: index.php");
+      exit();
+      
+    } else {
+      //ログイン失敗
+      $error["login"] = "failed";
+    }
+
+    // $result = $stmt->fetch(PDO::FETCH_LAZY);
 
     // while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
     //   $id = $result["id"];
@@ -40,9 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //   $hash = $result["hash"];
     // }
 
-    // $result = $stmt->fetch();
     // $pref_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
+
     // $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     // $stmt->bindValue(':name', $name, PDO::PARAM_STR);
     // $stmt->bindValue(':hash', $hash, PDO::PARAM_STR);
@@ -66,7 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // $hash = $stmt->fetchColumn();
 
 
-    var_dump($name);
+    // var_dump($id);
+    // var_dump($name);
+    // var_dump($hash);
   }
 }
 
@@ -93,8 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <input type="email" name="email" size="35" maxlength="255" placeholder="Email Address" value="<?php echo h($email) ?>"></input>
         <?php if (isset($error["login"]) && $error["login"] === "blank") : ?>
           <p class="error">メールアドレスとパスワードを正しくご記入ください</p>
+        <?php elseif (isset($error["login"]) && $error["login"] === "failed") : ?>
+          <p class="error">ログインに失敗しました。メールアドレスとパスワードを正しく入力してください。</p>
         <?php endif ?>
-        <p class="error">ログインに失敗しました。正しく入力してください。</p>
       </div>
       <div class="form-item">
         <label for="password"></label>
