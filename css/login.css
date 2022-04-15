@@ -99,4 +99,5 @@ form {
 .error {
   color: #d60e0e;
   font-size: 80%;
+  font-weight: bold;
 }
