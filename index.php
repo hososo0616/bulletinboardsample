@@ -2,6 +2,7 @@
 session_start();
 require("library.php");
 
+
 if (isset($_SESSION["id"]) && isset($_SESSION["name"])) {
   $id = $_SESSION["id"];
   $name = $_SESSION["name"];
@@ -68,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       </form>
 
       <?php
-      $stmt = $db->prepare("select p.id, p.member_id, p.message, p.created, m.name, m.image 
+      $stmt = $db->prepare("select p.id, p.member_id, p.message, p.created, p.edited, m.name, m.image 
                               from posts p, members m 
                               where m.id=p.member_id
                               order by id desc");
@@ -89,17 +90,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       ?>
 
         <div class="msg">
-          <?php if ($result["image"]): ?>
+          <?php if ($result["image"]) : ?>
             <img src="member_picture/<?php echo $result["image"] ?>" width="48" height="48" alt="" />
-          <?php else: ?>
+          <?php else : ?>
             <img src="member_picture/freeaicon.jpg" width="48" height="48" alt="" />
           <?php endif ?>
           <p><?php echo h($result["message"]) ?><span class="name">（<?php echo h($result["name"]) ?>）</span></p>
-          <p class="day"><a href="view.php?id=<?php echo h($result["id"])?>"><?php echo h($result["created"]) ?></a>
-            <?php if ($_SESSION["id"] === $result["member_id"]) :?>
-            [<a href="delete.php?id=<?php echo $result["id"]?>" style="color: #F33;">削除</a>]
+          <p class="day"><a href="view.php?id=<?php echo h($result["id"]) ?>"><?php echo h($result["created"]) ?></a>
+            <?php if ($_SESSION["id"] === $result["member_id"]) : ?>
+              [<a href="update.php?id=<?php echo $result["id"] ?>" style="color: #0000FF;">編集</a>]
+              [<a href="delete.php?id=<?php echo $result["id"] ?>" style="color: #F33;">削除</a>]
             <?php endif ?>
           </p>
+          <?php if ($result["edited"] === "1"): ?>
+            <p id="edited">【編集済み】</p>
+          <?php endif ?>
         </div>
       <?php endwhile ?>
     </div>
