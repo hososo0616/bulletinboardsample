@@ -95,8 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <img src="member_picture/freeaicon.jpg" width="48" height="48" alt="" />
           <?php endif ?>
           <p><?php echo h($result["message"]) ?><span class="name">（<?php echo h($result["name"]) ?>）</span></p>
-          <p class="day"><a href="view.php?id="><?php echo h($result["created"]) ?></a>
-            [<a href="delete.php?id=" style="color: #F33;">削除</a>]
+          <p class="day"><a href="view.php?id=<?php echo h($result["id"])?>"><?php echo h($result["created"]) ?></a>
+            <?php if ($_SESSION["id"] === $result["member_id"]) :?>
+            [<a href="delete.php?id=<?php echo $result["id"]?>" style="color: #F33;">削除</a>]
+            <?php endif ?>
           </p>
         </div>
       <?php endwhile ?>
