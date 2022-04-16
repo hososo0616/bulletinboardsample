@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
     <div class="form-footer">
       <p><a href="join/index.php">Create an account</a></p>
-      <p><a href="#">Forgot password?</a></p>
+      <!-- <p><a href="#">Forgot password?</a></p> -->
     </div>
   </div>
 </body>
