@@ -34,7 +34,7 @@ body {
 	border-left: 1px solid #d4d4d4;
 	border-right: 1px solid #d4d4d4;
 	border-bottom: 1px solid #d4d4d4;
-	background: url(images/bg_head.png) bottom left repeat-x #106eb7;
+	background: url(images/bg_head.png) bottom left repeat-x #7df3b8;
 	color: #fff;
 	padding: 20px;
 	margin-bottom: 20px;
@@ -134,18 +134,19 @@ li {
 .msg {
 	clear: both;
 	border-top: 1px solid #ccc;
-	padding: 10px 0;
+	padding: 50px 20px;
 }
 .msg img {
 	float: left;
-	margin-right: 5px;
+	margin-right: 50px;
 }
 .msg p {
 	margin: 0;
+	font-size: 110%;
 }
 .msg .day,
 .msg .day a {
-	font-size: 80%;
+	font-size: 100%;
 	color: #999;
 }
 

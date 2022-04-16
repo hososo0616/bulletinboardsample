@@ -1,0 +1,41 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Rubik+Moonrocks&display=swap');
+
+/* fontawesome */
+/* @import url(http://weloveiconfonts.com/api/?family=fontawesome);
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+} */
+
+/* Simple Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* body */
+body {
+  background: #e9e9e9;
+  color: #5e5e5e;
+  font: 400 87.5%/1.5em 'DotGothic16', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  padding: 1em 0;
+}
+
+.error {
+  color: #d60e0e;
+  font-size: 80%;
+  font-weight: bold;
+}
+
+#finish {
+  text-align: center;
+  font-size: 2rem;
+  margin: 100px auto;
+}
+
+#login {
+  text-align: center;
+  /* margin: 0 auto; */
+  font-size: 1.2rem;
+}

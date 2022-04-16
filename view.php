@@ -89,18 +89,21 @@ if (!$id) {
 
           <div class="msg">
             <?php if ($result["image"]) : ?>
-              <img id="prof" src="member_picture/<?php echo $result["image"] ?>" width="48" height="48" alt="" />
+              <img id="prof" src="member_picture/<?php echo $result["image"] ?>" width="150" height="150" alt="" />
             <?php else : ?>
-              <img src="member_picture/freeaicon.jpg" width="48" height="48" alt="" />
+              <img src="member_picture/freeaicon.jpg" width="150" height="150" alt="" />
             <?php endif ?>
             <p><?php echo h($result["message"]) ?><span class="name">（<?php echo h($result["name"]) ?>）</span></p>
             <p class="day"><a href="view.php?id="><?php echo h($result["created"]) ?></a>
-              [<a href="delete.php?id=" style="color: #F33;">削除</a>]
+              <?php if ($_SESSION["id"] === $result["member_id"]) : ?>
+                [<a href="update.php?id=<?php echo $result["id"] ?>" style="color: #0000FF;">編集</a>]
+                [<a href="delete.php?id=<?php echo $result["id"] ?>" style="color: #F33;">削除</a>]
+              <?php endif ?>
             </p>
           </div>
-          <?php else : ?>
-            <p>その投稿は削除されたか、URLが間違えています</p>
-          <?php endif ?>
+        <?php else : ?>
+          <p>その投稿は削除されたか、URLが間違えています</p>
+        <?php endif ?>
       </div>
     </div>
 </body>
