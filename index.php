@@ -10,11 +10,12 @@ if (isset($_SESSION["id"]) && isset($_SESSION["name"])) {
   exit();
 }
 
+$db = dbconnect();
+
 //メッセージの投稿
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
 
-  $db = dbconnect();
   $stmt = $db->prepare("insert into posts (message, member_id) values (?, ?)");
   if (!$stmt) {
     die($db->error);
@@ -27,6 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (!$success) {
     die($db->error);
   }
+
+  header("Location: index.php");
+  exit();
 }
 ?>
 
@@ -48,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <h1>ひとこと掲示板</h1>
     </div>
     <div id="content">
-      <div style="text-align: right"><a href="logout.php">ログアウト</a></div>
+      <div style="text-align: right"><a href="login.php">ログアウト</a></div>
       <form action="" method="post">
         <dl>
           <dt><?php echo h($name) ?>さん、メッセージをどうぞ</dt>
@@ -63,13 +67,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
       </form>
 
-      <div class="msg">
-        <img src="member_picture/" width="48" height="48" alt="" />
-        <p>○○<span class="name">（○○）</span></p>
-        <p class="day"><a href="view.php?id=">2021/01/01 00:00:00</a>
-          [<a href="delete.php?id=" style="color: #F33;">削除</a>]
-        </p>
-      </div>
+      <?php
+      $stmt = $db->prepare("select p.id, p.member_id, p.message, p.created, m.name, m.image 
+                              from posts p, members m 
+                              where m.id=p.member_id
+                              order by id desc");
+
+      if (!$stmt) {
+        die($db->error);
+      }
+
+      $success = $stmt->execute();
+      if (!$success) {
+        die($db->error);
+      }
+
+      // while($stmt->fetch()):
+
+      while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) :
+
+      ?>
+
+        <div class="msg">
+          <?php if ($result["image"]): ?>
+            <img src="member_picture/<?php echo $result["image"] ?>" width="48" height="48" alt="" />
+          <?php else: ?>
+            <img src="member_picture/freeaicon.jpg" width="48" height="48" alt="" />
+          <?php endif ?>
+          <p><?php echo h($result["message"]) ?><span class="name">（<?php echo h($result["name"]) ?>）</span></p>
+          <p class="day"><a href="view.php?id="><?php echo h($result["created"]) ?></a>
+            [<a href="delete.php?id=" style="color: #F33;">削除</a>]
+          </p>
+        </div>
+      <?php endwhile ?>
     </div>
   </div>
 </body>
