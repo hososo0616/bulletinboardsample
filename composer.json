@@ -1,0 +1,5 @@
+{
+  "require": {
+    "silex/silex": "~8.0.1"
+  }
+}
